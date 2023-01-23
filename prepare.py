@@ -61,7 +61,6 @@ def modeling_split(intrain, inval, intest, target):
     
     return x_train, y_train, x_val, y_val, x_test, y_test
 
-
 def dummy_scale(df, train_df):
     
     '''
@@ -69,18 +68,21 @@ def dummy_scale(df, train_df):
     columns for modeling
     '''
     
-    mm_scaler = MinMaxScaler()
-    mm_scaler.fit(train_df[['sqrft']])
-    df['sqrft'] = mm_scaler.transform(df[['sqrft']])
     df['year_bin'] = pd.qcut(df['year_built'], 10, labels = ['a','b','c','d','e','f',
                                                           'g','h','i','j'])
-    df.drop(columns = ['year_built'], inplace = True)
-    dummies = pd.get_dummies(df[['bedroom','bathroom','fips','year_bin']], 
-                             drop_first = [True, True])
-    df = pd.concat([df, dummies], axis = 1)
-    df.drop(columns = ['bedroom','bathroom','fips','year_bin'], inplace = True)
+    
+    df = pd.get_dummies(df, columns = ['bedroom','bathroom','fips','year_bin'], 
+                             drop_first = [True, True])   
+    
+    mm_scaler = MinMaxScaler()
+    mm_scaler.fit(train_df[['sqrft']])
+    sqft_scaled = mm_scaler.transform(df[['sqrft']])
+    df['sqft_scaled'] = sqft_scaled
+    df.drop(columns = ['sqrft','year_built'], inplace = True)
     
     return df
+
+
 
 def prep_2_model(xtr, xv, xtt, train_df):
     oxtr = dummy_scale(xtr, train_df)
