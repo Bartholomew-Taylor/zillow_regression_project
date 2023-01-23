@@ -33,6 +33,7 @@ def clean_prep_zillow(df):
                        'calculatedfinishedsquarefeet':'sqrft',
                        'taxvaluedollarcnt':'tax_value',
                        'yearbuilt':'year_built'}, inplace = True)
+    df.drop(columns = ['transactiondate'], inplace = True)
     for col in df:
         
         mean = df[col].mean()
@@ -88,4 +89,11 @@ def prep_2_model(xtr, xv, xtt, train_df):
     oxtr = dummy_scale(xtr, train_df)
     oxv = dummy_scale(xv, train_df)
     oxtt = dummy_scale(xtt, train_df)
+    oxtr.drop(columns = ['year_bin_j','year_bin_c','bedroom_4.0','fips_6111.0','year_bin_b','bathroom_2.0'], 
+        inplace = True)
+    oxv.drop(columns = ['year_bin_j','year_bin_c','bedroom_4.0','fips_6111.0','year_bin_b','bathroom_2.0'], 
+        inplace = True)
+    oxtt.drop(columns = ['year_bin_j','year_bin_c','bedroom_4.0','fips_6111.0','year_bin_b','bathroom_2.0'], 
+        inplace = True)
     return oxtr, oxv, oxtt
+

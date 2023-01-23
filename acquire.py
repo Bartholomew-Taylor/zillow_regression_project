@@ -28,7 +28,7 @@ def get_zillow_sfr_data():
         return pd.read_csv(filename)
     else:
         # read the SQL query into a dataframe
-        df = pd.read_sql('SELECT bedroomcnt, bathroomcnt, calculatedfinishedsquarefeet, taxvaluedollarcnt, yearbuilt, fips FROM properties_2017 JOIN propertylandusetype USING (propertylandusetypeid) WHERE propertylandusedesc = "Single Family Residential"', get_connection ('zillow'))
+        df = pd.read_sql("SELECT bedroomcnt, bathroomcnt, calculatedfinishedsquarefeet, taxvaluedollarcnt, yearbuilt, fips, transactiondate FROM properties_2017 JOIN propertylandusetype USING (propertylandusetypeid) JOIN predictions_2017 USING (id) WHERE propertylandusedesc = 'Single Family Residential' HAVING transactiondate BETWEEN '2017-01-01' AND '2017-12-31' ", get_connection ('zillow'))
 
         # Write that dataframe to disk for later. Called "caching" the data for later.
         df.to_csv(filename)
